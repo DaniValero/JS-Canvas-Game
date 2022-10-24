@@ -3,7 +3,11 @@ var Game = {
     ctx: undefined,
     fps: 60,
     scoreBoard: undefined,
-    keys: {},
+    keys: {
+        LEFT_ARROW: 37,
+        RIGHT_ARROW: 39,
+        SPACE: 32
+    },
 
     init: function(canvasId) {
         this.canvas = document.getElementById(canvasId);
@@ -33,6 +37,8 @@ var Game = {
 
     reset: function() {
         this.background = new Background(this.canvas.width, this.canvas.height, this.ctx);
+        this.player = new Player(this.canvas.width, this.canvas.height, this.ctx, this.keys);
+        this.framesCounter = 0;
     },
 
     clear: function() {
@@ -41,11 +47,12 @@ var Game = {
 
     drawAll: function() {
         this.background.draw()
-        console.log("background")
+        this.player.draw(this.framesCounter)
     },
 
     moveAll: function() {
         this.background.move();
+        this.player.move();
     }
 
 }
