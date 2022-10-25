@@ -29,6 +29,9 @@ var Game = {
           if (this.framesCounter > 1000) {
             this.framesCounter = 0;
           }
+          if (this.framesCounter % 100 === 0) {
+            this.generateObstacle();
+          }
     
           this.drawAll()
           this.moveAll()
@@ -39,6 +42,7 @@ var Game = {
         this.background = new Background(this.canvas.width, this.canvas.height, this.ctx);
         this.player = new Player(this.canvas.width, this.canvas.height, this.ctx, this.keys);
         this.framesCounter = 0;
+        this.obstacles = [];
     },
 
     clear: function() {
@@ -48,11 +52,22 @@ var Game = {
     drawAll: function() {
         this.background.draw()
         this.player.draw(this.framesCounter)
+        this.obstacles.forEach(function(obstacle) {
+            obstacle.draw();
+          });
     },
 
     moveAll: function() {
         this.background.move();
         this.player.move();
-    }
+        this.obstacles.forEach(function(obstacle) {
+            obstacle.move();
+          });
+    },
 
+    generateObstacle: function() {
+        this.obstacles.push(
+          new Obstacle(this.canvas.width, this.player.y, this.player.h, this.ctx)
+        );
+    }
 }

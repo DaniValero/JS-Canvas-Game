@@ -1,10 +1,3 @@
-const img = {}
-img.player = new Image();
-
-
-
-
-
 class Player {
     constructor(w, h, ctx, keys) {
       this.canvasW = w;
@@ -13,19 +6,16 @@ class Player {
       this.keys = keys;
       this.x = this.canvasW * 0.5;
       this.y = this.canvasH * 0.5;
-      this.action = "idle"
 
-      this.vy = 1
+      this.vy = 0.5
+      this.vx = 1
 
-      this.dx0 = 8;
-      this.dx = this.dx0;
-      this.dy = 1;
-      
-
+      this.dx = 0
+      this.dy = 0
 
       // Animacion idle
       this.img = new Image();
-      this.img.src = "images/idle-Sheet.png";
+      this.img.src = "images/idle-Sheet.png"
     
       this.img.frames = 8;
       this.img.frameIndex = 0;
@@ -33,6 +23,8 @@ class Player {
       // medidas de la imagen a representar en el canvas
       this.w = 50;
       this.h = 50;
+
+      this.setListeners()
 
     }
   
@@ -55,67 +47,93 @@ class Player {
   
     setListeners() {
       document.onkeydown = function(event) {
-       if (event.keyCode == this.keys.RIGHT_ARROW) {
+        if (event.keyCode == this.keys.RIGHT_ARROW) {
+        console.log("derecha")
+        this.dx = 9;
+        this.x += this.dx
+
         this.img.src = "images/run-right.png";
         if (this.img.frameIndex > 7) {this.img.frameIndex = 0}
-
-        if (this.x < 750) {
-          this.x += 8
-          } else {
-            this.x = 750;
-            this.dx = 0;
-          }
-        }else if (event.keyCode == this.keys.RIGHT_ARROW) {
-            this.img.src = "images/run-right.png";
-            if (this.img.frameIndex > 7) {this.img.frameIndex = 0}
-    
-            if (this.x < 750) {
-              this.x += 8
-              } else {
-                this.x = 750;
-                this.dx = 0;
-              }
-        } else if (event.keyCode == this.keys.LEFT_ARROW) {
+        // if (this.x < 750) {
+        //   this.x += 8
+        //   } else {
+        //     this.x = 750;
+        //     this.dx = 0;
+        //   }
+        }
+        if (event.keyCode == this.keys.LEFT_ARROW) {
           this.img.src = "images/run-left.png"
           if (this.img.frameIndex > 7) {this.img.frameIndex = 0}
-          if(this.x >= 0) {
-            this.x -= 8
-          } else {
-            this.x = 0
-            this.dx = 0;
-          }
-        } else if (event.keyCode == this.keys.SPACE) {
-          this.img.src = "images/jump-right.png"
-          this.img.frames = 11;
-          if (this.img.frameIndex > 10) this.img.frameIndex = 0;
-          this.y -= 20;
-          this.vy -= 10;
+          this.dx = 9;
+          this.x -= this.dx
         } 
-      document.onkeyup = function (event) {
-        this.img.src = "images/idle-Sheet.png"
-        this,img.frames = 8;
-        if (this.img.frameIndex > 7) this.img.frameIndex = 0;
-      }
+      
+        // SALTO DCHA
+
+        if (event.keyCode == this.keys.SPACE)  {
+
+          this.img.src = "images/run-right.png";
+          this.dy = 20;
+          this.vy = 5;
+
+          this.img.frames = 8;
+          if (this.img.frameIndex > 7) this.img.frameIndex = 0;
+        }
+        
+        
+      }.bind(this);
+
+      document.onkeyup = function(event) {
+        if (event.keyCode == this.keys.RIGHT_ARROW) {
+          this.img.src = "images/idle-Sheet.png"
+          if (this.img.frameIndex > 7) {this.img.frameIndex = 0}
+          this.dx = 0
+        }
+        if (event.keyCode == this.keys.LEFT_ARROW) {
+          this.img.src = "images/idle-Sheet.png"
+          if (this.img.frameIndex > 7) {this.img.frameIndex = 0}
+          this.dx = 0  
+        }
+
+        if (event.keyCode == this.keys.SPACE) {
+
+          this.img.src = "images/idle-Sheet.png"
+          this.img.frames = 8;
+          if (this.img.frameIndex > 7) this.img.frameIndex = 0;
+          this.dy = 0
+          this.vy = 1
+         
+        }
       }.bind(this);
     }
 
+
     move() {
-
-      this.setListeners()
-
-      var gravity = 0.4;
+      var gravity = 0.5;
       if (this.y <= (this.canvasH * 0.5)) {
       this.vy += gravity
       this.y += this.vy;
       }
+
+      // MOVER DERECHA
+      this.x += this.dx
+
+      // MOVER IZQUIERDA
+      this.x -= this.dx
+
+      // SALTO
+      this.y -= this.dy
+      
+
+
     }
   
     animateImg(framesCounter) {
+  
       if (framesCounter % 6 === 0) {
         this.img.frameIndex += 1;}
         if (this.img.frameIndex > 7) this.img.frameIndex = 0;
       }
-
 
 }
 
