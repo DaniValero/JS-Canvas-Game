@@ -29,50 +29,81 @@ var Game = {
           if (this.framesCounter > 1000) {
             this.framesCounter = 0;
           }
-          if (this.framesCounter % 100 === 0) {
+          if (this.framesCounter % Math.floor(Math.random() * 500) === 0) {
             this.generateObstacle();
           }
+
+          if(this.isCollisionBottom()) {
+
+            this.player.vy = 0.4;
+          }
+
+          if(this.isCollisionTop()) {
+            console.log("plataforma")
+            this.player.yp = 485 - this.player.h - 50
+            this.player.y = this.player.yp
+          } 
     
           this.drawAll()
           this.moveAll()
         }, 1000 / this.fps);
     },
 
-    isCollisionRight: function() {
-      return this.obstacles.some(obstacle => {
-        return (
-          this.player.x >= obstacle.x + obstacle.w
-        );
-      });
-    },
+    // isCollisionRight: function() {
+    //   return this.obstacles.some(obstacle => {
+    //     return (
+    //       this.player.x >= obstacle.x + obstacle.w
+    //     );
+    //   });
+    // },
 
-    isCollisionLeft: function() {
-      return this.obstacles.some(obstacle => {
-        return (
-          this.player.x + this.player.w >= obstacle.x
-        );
-      })
-    },
+    // isCollisionLeft: function() {
+    //   return this.obstacles.some(obstacle => {
+    //     return (
+    //       this.player.x + this.player.w >= obstacle.x
+    //     );
+    //   })
+    // },
 
-    isCollisionBottom: function() {
-      return this.obstacles.some(obstacle => {
-        return (
-          this.player.y <= obstacle.y + 15
-        );
-      })
-    },
+    // isCollisionBottom: function() {
+    //   return this.obstacles.some(obstacle => {
+    //     return (
+    //       this.player.y <= obstacle.y + 15
+    //     );
+    //   })
+    // },
 
     isCollisionTop: function() {
       return this.obstacles.some(obstacle => {
         return (
-          this.player.y + this.player.h >= obstacle.y
+
+          
+          this.player.y + this.player.h >= obstacle.y &&
+          this.player.y < obstacle.y &&
+          this.player.x >= obstacle.x + obstacle.w &&
+          this.player.x + this.player.w >= obstacle.x &&
+          this.player.y < obstacle.y &&
+          this.player.vy >= 0
+
+          
         );
       })
     },
 
 
+    isCollisionBottom: function() {
+        return this.obstacles.some(obstacle => {
+            
+            return (
 
-
+                this.player.x + this.player.w >= obstacle.x &&
+                this.player.x <= obstacle.x + obstacle.w &&
+                this.player.y <= obstacle.y + obstacle.h &&
+                this.player.y > obstacle.y &&
+                this.player.vy < 0
+            );
+        })
+    },
 
     reset: function() {
         this.background = new Background(this.canvas.width, this.canvas.height, this.ctx);
@@ -104,12 +135,8 @@ var Game = {
 
     generateObstacle: function() {
         this.obstacles.push(
-          new Obstacle(this.canvas.width, this.player.y, this.player.h, this.ctx)
+            new Obstacle(this.canvas.width, this.player.y0, this.player.h, this.ctx)
         );
-
-
-        this.obstacles.push(
-          new ObstacleStart(this.canvas.width, this.player.y, this.player.h, this.ctx)
-        )
     }
 }
+
