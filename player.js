@@ -118,16 +118,10 @@ class Player {
        }
 
       // EFECTO ASCENSOR
-
-
       this.y += this.dy
 
       // MOVER DER/IZ
       this.x += this.dx
-
-
-      // SALTO
-      // this.y -= this.dy
     }
     
   

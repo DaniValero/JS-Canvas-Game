@@ -2,7 +2,7 @@ var Game = {
   canvas: undefined,
   ctx: undefined,
   fps: 60,
-  scoreBoard: undefined,
+  scoreBoard: 0,
   keys: {
     LEFT_ARROW: 37,
     RIGHT_ARROW: 39,
@@ -15,6 +15,7 @@ var Game = {
   init: function (canvasId) {
     this.canvas = document.getElementById(canvasId);
     this.ctx = this.canvas.getContext("2d");
+    ScoreBoard.init(this.ctx);
     this.start();
   },
 
@@ -33,15 +34,17 @@ var Game = {
 
       this.framesCounter++;
 
+      this.score += 0.01;
+
       if (this.framesCounter > 1000) {
         this.framesCounter = 0;
       }
-      if (this.framesCounter % 100 === 0) {
-        //this.generateObstacle();
+      if (this.framesCounter % 135 === 0) {
+        this.generateObstacle();
+        this.generateMob();
       }
 
       if (this.isCollisionBottom()) {
-        console.log("E")
         this.player.vy = -0.01;
       }
       
@@ -87,6 +90,8 @@ var Game = {
 
   reset: function () {
     this.background = new Background(this.canvas.width, this.canvas.height, this.ctx);
+    this.scoreBoard = ScoreBoard;
+    this.score = 0
 
     // generate 5 first obstacles
     this.obstacles = new Array(5)
@@ -107,14 +112,15 @@ var Game = {
             : this.randomInt( prevObstacle.x - prevObstacle.w, 
                               prevObstacle.x - prevObstacle.w * .75)
 
-        const currentObstacleY = canvasH * crop
+        const currentObstacleY = (canvasH * crop) -150
         const currentObstacle = new Obstacle(currentObstacleX, currentObstacleY, this.ctx)
 
         return [...prevObtacles, currentObstacle];       
       }, [])
          
     this.player = new Player(this.canvas.width, this.canvas.height, this.obstacles[0].x + (this.obstacles[0].w / 2), this.obstacles[0].y , this.ctx, this.keys); 
-
+    
+    this.mobs = []
     this.framesCounter = 0;                       
   },
 
@@ -122,13 +128,19 @@ var Game = {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
 
-  drawAll: function () {
+  drawAll: function () {  
     this.background.draw()
     this.player.draw(this.framesCounter)
+    this.drawScore();
+    
     this.obstacles.forEach(function (obstacle) {
       obstacle.draw();
+    })
 
-    });
+    this.mobs.forEach(enemigo => {
+      enemigo.draw(this.framesCounter)
+  })
+    
   },
 
   moveAll: function () {
@@ -137,11 +149,24 @@ var Game = {
     this.obstacles.forEach(function (obstacle) {
       obstacle.move();
     });
+    this.mobs.forEach(function (enemigo) {
+      enemigo.move();
+  
+    });
+  },
+
+  drawScore: function() {
+    this.scoreBoard.update(this.score);
   },
 
   generateObstacle: function () {
+    this.obstacles.push(
+      new Obstacle(this.randomInt(50, 450), 0, this.ctx)
+  );
+  },
 
-    
-
+  generateMob: function() {
+    this.mobs.push(
+      new Enemigo(this.randomInt(50, 550), 0, this.ctx))
   }
 }
