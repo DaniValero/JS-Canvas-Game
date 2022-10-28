@@ -29,6 +29,8 @@ class Player {
       this.dx = 0
       this.dy = 1;
 
+      this.bullets = []
+
       this.falling = false
 
       this.setListeners()
@@ -49,6 +51,15 @@ class Player {
       );
   
       this.animateImg(framesCounter);
+
+      this.bullets = this.bullets.filter(bullet => {
+        return bullet.x < this.canvasW;
+      });
+  
+      this.bullets.forEach(function(bullet) {
+        bullet.draw();
+        bullet.move();
+      });
   
     }
   
@@ -80,19 +91,38 @@ class Player {
           this.img.frames = 7;
           this.img.frameIndex = 0;
         }
+
+        // DISPARO DERECHA
+        if (event.keyCode == this.keys.D) {
+          this.shoot()
+        }
+        // DISPARO IZQDA
+        if (event.keyCode == this.keys.A) {
+          this.shootLeft()
+          
+        }
+
       }.bind(this);
 
       document.onkeyup = function(event) {
         if (event.keyCode == this.keys.RIGHT_ARROW) {
           this.dx = 0
+
+          this.img.src = "images/idle-Sheet.png"
+          this.img.frames = 8;
+          this.img.frameIndex = 0;
         }
 
         if (event.keyCode == this.keys.LEFT_ARROW) {
           this.dx = 0
+          this.img.src = "images/idle-Sheet.png"
+          this.img.frames = 8;
+          this.img.frameIndex = 0;
         }
      
 
         if (event.keyCode == this.keys.SPACE) {
+        
 
           // this.img.src = "images/idle-Sheet.png"
           // this.img.frames = 8;
@@ -101,7 +131,39 @@ class Player {
           // this.vy = 1
          
         }
+
+        if (event.keyCode == this.keys.CONTROL) {
+          this.img.src = "images/idle-Sheet.png"
+          this.img.frames = 8;
+          this.img.frameIndex = 0;
+        }
       }.bind(this);
+    }
+
+    shoot() {
+      var bullet = new Bullet(
+        this.x + this.w,
+        this.y + this.h / 2,
+        this.y0,
+        this.h,
+        this.vx = 15,
+        this.ctx
+      );
+  
+      this.bullets.push(bullet);
+    }
+
+    shootLeft() {
+      var bullet = new Bullet(
+        this.x,
+        this.y + this.h / 2,
+        this.y0,
+        this.h,
+        this.vx = -10,
+        this.ctx
+      );
+    
+      this.bullets.push(bullet);
     }
 
 

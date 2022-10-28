@@ -6,7 +6,9 @@ var Game = {
   keys: {
     LEFT_ARROW: 37,
     RIGHT_ARROW: 39,
-    SPACE: 32
+    SPACE: 32,
+    A: 65,
+    D: 68
   },
   randomInt: function randomInt(min,max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
@@ -47,14 +49,69 @@ var Game = {
       if (this.isCollisionBottom()) {
         this.player.vy = -0.01;
       }
+
+      if(this.isCollisionMob()) {
+        console.log("Robot")
+      }
+
+      if(this.isCollisionMob()) {
+        this.gameOver()
+      }
+
+
+      if(this.player.y >= 600) {
+        this.gameOver()
+      }
       
+      // if(this.enemyHit()) {
+      //   console.log("bullet")
+      // }
+
+
       this.player.falling = !this.isCollisionTop();
-      
 
       this.drawAll()
       this.moveAll()
     }, 1000 / this.fps);
   },
+
+  stop: function() {
+    clearInterval(this.interval);
+  },
+
+  gameOver: function() {
+    this.stop();
+
+    if (confirm("GAME OVER. Play again?")) {
+      this.reset();
+      this.start();
+    }
+  },
+
+  // enemyHit: function () {
+  //   return this.mobs.some(enemigo => {
+  //     return (
+  //       bullet.x + bullet.w >= enemigo.x &&
+  //       bullet.x <= enemigo.x + enemigo.w &&
+  //       bullet.y + bullet.h >= enemigo.y + enemigo.w &&
+  //       bullet.y <= enemigo.y + enemigo.h
+
+  //     );
+  //   })
+  // },
+
+  isCollisionMob: function () {
+    return (this.mobs).some(enemigo => {
+      return (
+        this.player.x + this.player.w >= enemigo.x &&
+        this.player.x <= enemigo.x + enemigo.w &&
+        this.player.y + this.player.h >= enemigo.y + enemigo.w &&
+        this.player.y <= enemigo.y + enemigo.h
+
+      );
+    })
+  },
+
 
   isCollisionBottom: function () {
     return this.obstacles.some(obstacle => {
@@ -137,7 +194,7 @@ var Game = {
       obstacle.draw();
     })
 
-    this.mobs.forEach(enemigo => {
+    this.mobs.forEach(function (enemigo) {
       enemigo.draw(this.framesCounter)
   })
     

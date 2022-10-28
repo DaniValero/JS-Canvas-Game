@@ -2,19 +2,16 @@ class Enemigo {
     constructor(x, y, ctx) {
         this.ctx = ctx;
         this.w = 25;
-        this.h = 25;
+        this.h = 15;
         this.dy = 1;
         this.x = x;
         this.y = y - 50
         
         this.img = new Image();
-        this.img.src = "images/enemigo-idle.png"
+        this.img.src = "images/enemy.png"
         this.img.frames = 4;
         this.img.frameIndex = 0;
-
       }
- 
-  
     move() {
       this.y += this.dy;
     }

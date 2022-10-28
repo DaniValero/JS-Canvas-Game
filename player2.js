@@ -17,7 +17,7 @@ class Player {
 
       // Animacion idle
       this.img = new Image();
-      this.img.src = "images/run-right.png"
+      this.img.src = "images/idle-Sheet.png"
     
       this.img.frames = 8;
       this.img.frameIndex = 0;
